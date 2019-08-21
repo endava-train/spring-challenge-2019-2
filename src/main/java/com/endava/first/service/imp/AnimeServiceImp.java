@@ -1,5 +1,6 @@
 package com.endava.first.service.imp;
 
+import com.endava.first.mapping.objects.AnimeMapping;
 import com.endava.first.model.Anime;
 import com.endava.first.repository.AnimeRepository;
 import com.endava.first.service.AnimeService;
@@ -38,8 +39,9 @@ public class AnimeServiceImp implements AnimeService {
         return animes.stream().map(Anime::getAnimeId).collect(Collectors.toList());
     }
 
-    public Optional<Anime> getByAnimeId(Integer animeId) {
-        return animeRepository.findByAnimeId(animeId);
+    public Optional<AnimeMapping> getByAnimeId(final Integer animeId) {
+        Optional<Anime> anime = animeRepository.findByAnimeId(animeId);
+        return Optional.of(new AnimeMapping(anime.get()));
     }
 
     public List<Integer> getAllOrderedByRating(final Map<String, String> params) {

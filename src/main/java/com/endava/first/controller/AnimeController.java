@@ -1,5 +1,6 @@
 package com.endava.first.controller;
 
+import com.endava.first.mapping.objects.AnimeMapping;
 import com.endava.first.model.Anime;
 import com.endava.first.service.AnimeService;
 import lombok.RequiredArgsConstructor;
@@ -28,8 +29,8 @@ public class AnimeController {
     }
 
     @GetMapping("anime/{animeId}")
-    public ResponseEntity<Anime> getByAnimeId(final @PathVariable("animeId") Integer animeId) {
-        Optional<Anime> anime = animeService.getByAnimeId(animeId);
+    public ResponseEntity<AnimeMapping> getByAnimeId(final @PathVariable("animeId") Integer animeId) {
+        Optional<AnimeMapping> anime = animeService.getByAnimeId(animeId);
         return anime.isPresent() ? ResponseEntity.ok(anime.get()) : ResponseEntity.notFound().build();
     }
 
