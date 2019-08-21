@@ -66,7 +66,6 @@ public class AnimeServiceImp implements AnimeService {
             }
         });
 
-        System.out.println(query);
         List<Anime> animes = mongoTemplate.find(query, Anime.class);
         return animes.stream().map(Anime::getAnimeId).collect(Collectors.toList());
     }
