@@ -11,7 +11,7 @@
 	<groupId>com.endava</groupId>
 	<artifactId>first</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>first microservice</name>
+	<name>first micro service</name>
 	<description>First Point Challenge</description>
 
 	<properties>
@@ -19,10 +19,6 @@
 	</properties>
 
 	<dependencies>
-		<dependency>
-			<groupId>org.springframework.boot</groupId>
-			<artifactId>spring-boot-starter-data-jpa</artifactId>
-		</dependency>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-mongodb</artifactId>
