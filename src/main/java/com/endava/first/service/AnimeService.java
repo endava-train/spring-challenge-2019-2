@@ -9,6 +9,6 @@ import java.util.Optional;
 
 public interface AnimeService {
     List<Integer> getAll(final Optional<Integer> limit, final Optional<String> genre);
-    Optional<AnimeMapping> getByAnimeId(final Integer animeId);
+    Optional<AnimeMapping> getByAnimeId(final int animeId);
     List<Integer> getAllOrderedByRating(final Map<String, String> params);
 }

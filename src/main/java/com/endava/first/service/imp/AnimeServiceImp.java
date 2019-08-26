@@ -39,7 +39,7 @@ public class AnimeServiceImp implements AnimeService {
         return animes.stream().map(Anime::getAnimeId).collect(Collectors.toList());
     }
 
-    public Optional<AnimeMapping> getByAnimeId(final Integer animeId) {
+    public Optional<AnimeMapping> getByAnimeId(final int animeId) {
         Optional<Anime> anime = animeRepository.findByAnimeId(animeId);
         return Optional.of(new AnimeMapping(anime.get()));
     }
