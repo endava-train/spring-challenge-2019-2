@@ -1,7 +1,6 @@
 package com.endava.first.service;
 
 import com.endava.first.mapping.objects.AnimeMapping;
-import com.endava.first.model.Anime;
 
 import java.util.List;
 import java.util.Map;
