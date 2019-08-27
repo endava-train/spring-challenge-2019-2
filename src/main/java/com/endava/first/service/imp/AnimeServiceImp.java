@@ -26,7 +26,7 @@ public class AnimeServiceImp implements AnimeService {
     private final AnimeRepository animeRepository;
     private final MongoTemplate mongoTemplate;
 
-    public List<Integer> getAll(final Optional<Integer> limit, final Optional<String> genre) {
+    public List<Integer> getAllAnimeId(final Optional<Integer> limit, final Optional<String> genre) {
         Query query = new Query();
         query.fields().include("anime_id");
 
@@ -41,7 +41,7 @@ public class AnimeServiceImp implements AnimeService {
 
     public Optional<AnimeMapping> getByAnimeId(final int animeId) {
         Optional<Anime> anime = animeRepository.findByAnimeId(animeId);
-        return Optional.of(new AnimeMapping(anime.get()));
+        return anime.map(AnimeMapping::new);
     }
 
     public List<Integer> getAllOrderedByRating(final Map<String, String> params) {

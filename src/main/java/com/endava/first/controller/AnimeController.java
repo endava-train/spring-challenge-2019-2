@@ -21,21 +21,21 @@ public class AnimeController {
     private final AnimeService animeService;
 
     @GetMapping("anime")
-    public ResponseEntity<List<Integer>> getAll(
+    public ResponseEntity<List<Integer>> getAllAnimeId(
             final @RequestParam Optional<Integer> limit,
             final @RequestParam Optional<String> genre
         ) {
-        return ResponseEntity.ok(animeService.getAll(limit, genre));
+        return ResponseEntity.ok(animeService.getAllAnimeId(limit, genre));
     }
 
     @GetMapping("anime/{animeId}")
     public ResponseEntity<AnimeMapping> getByAnimeId(final @PathVariable("animeId") Integer animeId) {
-        Optional<AnimeMapping> anime = animeService.getByAnimeId(animeId);
-        return anime.isPresent() ? ResponseEntity.ok(anime.get()) : ResponseEntity.notFound().build();
+        Optional<AnimeMapping> animeMapping = animeService.getByAnimeId(animeId);
+        return animeMapping.isPresent() ? ResponseEntity.ok(animeMapping.get()) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("anime/top")
-    public ResponseEntity<List<Integer>> getAll(final @RequestParam Map<String, String> params) {
+    public ResponseEntity<List<Integer>> getAllOrderedByRating(final @RequestParam Map<String, String> params) {
         return ResponseEntity.ok(animeService.getAllOrderedByRating(params));
     }
 
