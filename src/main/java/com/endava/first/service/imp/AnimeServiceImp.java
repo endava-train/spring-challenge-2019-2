@@ -5,6 +5,7 @@ import com.endava.first.model.Anime;
 import com.endava.first.repository.AnimeRepository;
 import com.endava.first.service.AnimeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -21,15 +22,16 @@ import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Slf4j
 public class AnimeServiceImp implements AnimeService {
 
     private final AnimeRepository animeRepository;
     private final MongoTemplate mongoTemplate;
 
-    public List<Integer> getAllAnimeId(final Optional<Integer> limit, final Optional<String> genre) {
+    public List<Integer> getAllAnimeId(Optional<Integer> limit, Optional<String> genre) {
         Query query = new Query();
         query.fields().include("anime_id");
-
+        log.info(query.toString());
         genre.ifPresent(s -> {
             String criteria = new StringBuilder(".*").append(s).append(".*").toString();
             query.addCriteria(Criteria.where("genre").regex(criteria));
@@ -39,9 +41,8 @@ public class AnimeServiceImp implements AnimeService {
         return animes.stream().map(Anime::getAnimeId).collect(Collectors.toList());
     }
 
-    public Optional<AnimeMapping> getByAnimeId(final int animeId) {
-        Optional<Anime> anime = animeRepository.findByAnimeId(animeId);
-        return anime.map(AnimeMapping::new);
+    public Optional<Anime> getByAnimeId(final int animeId) {
+        return animeRepository.findByAnimeId(animeId);
     }
 
     public List<Integer> getAllOrderedByRating(final Map<String, String> params) {

@@ -4,6 +4,7 @@ import com.endava.first.mapping.objects.AnimeMapping;
 import com.endava.first.model.Anime;
 import com.endava.first.service.AnimeService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,6 +18,7 @@ import java.util.Optional;
 
 @RestController
 @RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@Slf4j
 public class AnimeController {
     private final AnimeService animeService;
 
@@ -30,8 +32,8 @@ public class AnimeController {
 
     @GetMapping("anime/{animeId}")
     public ResponseEntity<AnimeMapping> getByAnimeId(final @PathVariable("animeId") Integer animeId) {
-        Optional<AnimeMapping> animeMapping = animeService.getByAnimeId(animeId);
-        return animeMapping.isPresent() ? ResponseEntity.ok(animeMapping.get()) : ResponseEntity.notFound().build();
+        Optional<Anime> animeMapping = animeService.getByAnimeId(animeId);
+        return animeMapping.isPresent() ? ResponseEntity.ok(new AnimeMapping(animeMapping.get())) : ResponseEntity.notFound().build();
     }
 
     @GetMapping("anime/top")

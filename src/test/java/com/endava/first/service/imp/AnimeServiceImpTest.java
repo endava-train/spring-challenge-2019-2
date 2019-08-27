@@ -1,31 +1,21 @@
 package com.endava.first.service.imp;
 
-import com.endava.first.controller.AnimeController;
-import com.endava.first.mapping.objects.AnimeMapping;
 import com.endava.first.model.Anime;
 import com.endava.first.repository.AnimeRepository;
 import com.endava.first.service.AnimeService;
-import javafx.beans.value.ObservableBooleanValue;
 import lombok.extern.slf4j.Slf4j;
 import lombok.val;
 import org.junit.Test;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.mongodb.core.MongoTemplate;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.data.mongodb.core.query.Query;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import static org.mockito.Mockito.when;
 import static org.junit.Assert.assertEquals;
+import static org.mockito.Mockito.when;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 
@@ -41,14 +31,13 @@ public class AnimeServiceImpTest {
     }
 
     @Test
-    public void getAllIds() {
+    public void getAllAnimeId() {
         AnimeRepository animeRepository = mock(AnimeRepository.class);
         MongoTemplate mongoTemplate = mock(MongoTemplate.class);
-        AnimeService animeService = new AnimeServiceImp(animeRepository, mongoTemplate);
 
         List<Anime> animes = Stream
                 .iterate(0, i -> i + 1)
-                .limit(new Random().nextInt(10))
+                .limit(10)
                 .map(animeId -> {
                     Anime anime = new Anime();
                     anime.setAnimeId(animeId);
@@ -60,54 +49,58 @@ public class AnimeServiceImpTest {
                 .map(Anime::getAnimeId)
                 .collect(Collectors.toList());
 
-        when(animeService.getAllAnimeId(any(Optional.class), any(Optional.class))).thenReturn(animes);
-
-        final AnimeController animeController = new AnimeController(animeService);
-
-
-
-//        animeRepository.deleteAll();
-//        List<Anime> animes = Stream
-//                .iterate(0, i -> i + 1)
-//                .limit(new Random().nextInt(10))
-//                .map(animeId -> {
-//                    Anime anime = new Anime();
-//                    anime.setAnimeId(animeId);
-//                    return anime;
-//                }).collect(Collectors.toList());
-//
-//        animes.forEach(anime -> animeRepository.save(anime));
-//
-//        val animeList = animes
-//                .stream()
-//                .map(Anime::getAnimeId)
-//                .collect(Collectors.toList());
-//
-//        val idsAnimes = animeService.getAll(Optional.empty(), Optional.empty());
-//
-//        assertEquals(idsAnimes.toString(), animeList.toString());
+        when(mongoTemplate.find(any(Query.class), any(Class.class))).thenReturn(animes);
+        AnimeService animeService = new AnimeServiceImp(animeRepository, mongoTemplate);
+        val allAnimeIds = animeService.getAllAnimeId(Optional.empty(), Optional.empty());
+        assertEquals(allAnimeIds.toString(), animeList.toString());
     }
 
     @Test
     public void getByAnimeId() {
-//        animeRepository.deleteAll();
-//        List<Anime> animes = Stream
-//                .iterate(0, i -> i + 1)
-//                .limit(new Random().nextInt(10) + 1)
-//                .map(animeId -> {
-//                    Anime anime = new Anime();
-//                    anime.setAnimeId(animeId);
-//                    return anime;
-//                }).collect(Collectors.toList());
-//
-//        animes.forEach(anime -> animeRepository.save(anime));
-//
-//        int randomId = new Random().nextInt(animes.size());
-//        log.info(Integer.valueOf(randomId).toString());
-//        log.info(animeRepository.findAll().toString());
-//        log.info(animeService.getByAnimeId(randomId).toString());
-//        Optional<AnimeMapping> anime = animeService.getByAnimeId(randomId);
-//        log.info(anime.toString());
-//        assertEquals(anime.toString(), new AnimeMapping(animes.get(randomId)).toString());
+        AnimeRepository animeRepository = mock(AnimeRepository.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+
+        List<Anime> animes = Stream
+                .iterate(0, i -> i + 1)
+                .limit(new Random().nextInt(10) + 2)
+                .map(animeId -> {
+                    Anime anime = new Anime();
+                    anime.setAnimeId(animeId);
+                    return anime;
+                }).collect(Collectors.toList());
+
+        int chosenIndex = new Random().nextInt(animes.size());
+        Anime chosenElement = animes.get(chosenIndex);
+        when(animeRepository.findByAnimeId(any(Integer.class))).thenReturn(Optional.of(chosenElement));
+        AnimeService animeService = new AnimeServiceImp(animeRepository, mongoTemplate);
+
+        val anime = animeService.getByAnimeId(chosenIndex);
+        assertEquals(anime.get().getAnimeId(), chosenElement.getAnimeId());
     }
+
+    @Test
+    public void getAllOrderedByRating() {
+        AnimeRepository animeRepository = mock(AnimeRepository.class);
+        MongoTemplate mongoTemplate = mock(MongoTemplate.class);
+
+        List<Anime> animes = Stream
+                .iterate(0, i -> i + 1)
+                .limit(10)
+                .map(animeId -> {
+                    Anime anime = new Anime();
+                    anime.setAnimeId(animeId);
+                    return anime;
+                }).collect(Collectors.toList());
+
+        List<Integer> animeList = animes
+                .stream()
+                .map(Anime::getAnimeId)
+                .collect(Collectors.toList());
+
+        when(mongoTemplate.find(any(Query.class), any(Class.class))).thenReturn(animes);
+        AnimeService animeService = new AnimeServiceImp(animeRepository, mongoTemplate);
+        val allOrderedByRating = animeService.getAllOrderedByRating(new TreeMap<>());
+        assertEquals(allOrderedByRating.toString(), animeList.toString());
+    }
+
 }
